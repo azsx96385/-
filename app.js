@@ -2,6 +2,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const exphbs = require("express-handlebars");
+const bdParser = require("body-parser");
+
 //[model]
 const Todo = require("./models/todo");
 //express server 設定與啟用
@@ -25,6 +27,9 @@ db.once("open", () => {
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
+//啟用body parser
+app.use(bdParser.urlencoded({ extended: true }));
+
 //[路由區]--------------------------------------
 app.get("/todos", (req, res) => {
   //顯示首頁
@@ -35,9 +40,22 @@ app.get("/todos", (req, res) => {
 });
 
 app.get("/todos/new", (req, res) => {
-  //顯示新增頁面 | 使用get-req.query.name 抓值 - 丟給model 建立參數
-  res.send("這是 todo 新增頁面");
+  //顯示新增頁面 |
+  res.render("show");
 });
+app.post("/todos", (req, res) => {
+  //顯示新增頁面 | 使用get-req.query.name 抓值 - 丟給model 建立參數
+  //Q create & save 有什麼不一樣
+
+  let newTodo = req.body.todo;
+
+  const todo = Todo({ name: newTodo });
+  todo.save(err => {
+    if (err) return console.log(err);
+    return res.redirect("/todos");
+  });
+});
+
 app.get("/todos/:id", (req, res) => {
   //檢視單一todo資料
   res.send("檢視單一 todo 資料");
