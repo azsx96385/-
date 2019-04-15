@@ -3,10 +3,12 @@
 <ul>
     {{#each todos}}
     <li>
-        <h4>{{this.name}}</h4>
-        <a href="">Detail</a>
-        <a href="">Edit</a>
-        <button type="submit">Delete</button>
+        {{{this.name}}}
+        <a href="/todos/{{{this.id}}}">Detail</a>
+        <a href="/todos/{{{this.id}}}/edit">Edit</a>
+        <form action="/todos/{{{this.id}}}/delete" method="post">
+            <button type="submit">Delete</button>
+        </form>
     </li>
     {{/each}}
 </ul>

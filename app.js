@@ -58,20 +58,40 @@ app.post("/todos", (req, res) => {
 
 app.get("/todos/:id", (req, res) => {
   //檢視單一todo資料
-  res.send("檢視單一 todo 資料");
+  //研究一下-Model 的用法 findById()
+  let id = req.params.id;
+  Todo.findById(id, (err, todo) => {
+    return res.render("detail", { todo: todo });
+  });
 });
 
 app.get("/todos/:id/edit", (req, res) => {
   //檢視-單一todo資料 編輯頁
-  res.send("檢視-單一todo資料 編輯頁");
+  let id = req.params.id;
+  Todo.findById(id, (err, todo) => {
+    return res.render("edit", { todo });
+  });
 });
 
 app.post("/todos/:id/edit", (req, res) => {
   //編輯 單一todo資料
-  res.send("編輯 單一todo資料");
+  //res.send("編輯 單一todo資料");
+  id = req.params.id;
+  Todo.findById(id, (err, todo) => {
+    todo.name = req.body.name;
+    todo.save(err => {
+      console.log(err);
+    });
+    return res.redirect("/todos/" + todo.id);
+  });
 });
 
 app.post("/todos/:id/delete", (req, res) => {
   //刪除單一todo 資料
-  res.send("刪除單一todo 資料");
+  id = req.params.id;
+  Todo.findById(id, (err, todo) => {
+    todo.remove(err => {
+      return res.redirect("/todos");
+    });
+  });
 });
