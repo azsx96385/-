@@ -6,14 +6,16 @@ const bdParser = require("body-parser");
 
 //[model]
 const Todo = require("./models/todo");
-//express server 設定與啟用
+
+//---------------------------------------------------------------------------------------------
+//[設定]express server 設定與啟用
 const port = 3000;
 const app = express();
 app.listen(port, () => {
   console.log("hello world !!");
 });
 
-//mongoose 設定與啟用 | "mongodb://127.0.0.1/todo" [mongodb|位置|資料庫名稱]
+//[設定]mongoose 設定與啟用 | "mongodb://127.0.0.1/todo" [mongodb|位置|資料庫名稱]
 mongoose.connect("mongodb://127.0.0.1/todo", { useNewUrlParser: true });
 const db = mongoose.connection;
 db.on("error", () => {
@@ -23,22 +25,27 @@ db.once("open", () => {
   console.log("mongodb connected!!");
 });
 
-//handlebars 樣板引擎設定
+//[設定]handlebars 樣板引擎設定
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-//啟用body parser
+//[設定]啟用body parser
 app.use(bdParser.urlencoded({ extended: true }));
 
+//---------------------------------------------------------------------------------------------
 //[路由區]--------------------------------------
+
+//1.index - 顯示所有資料
 app.get("/todos", (req, res) => {
   //顯示首頁
-
-  Todo.find((err, todo) => {
-    res.render("index", { todos: todo });
-  });
+  Todo.find()
+    .sort({ done: "desc" })
+    .exec((err, todo) => {
+      res.render("index", { todos: todo });
+    });
 });
 
+//2.create - 新增一筆資料
 app.get("/todos/new", (req, res) => {
   //顯示新增頁面 |
   res.render("show");
@@ -56,6 +63,7 @@ app.post("/todos", (req, res) => {
   });
 });
 
+//3.檢視單一資料頁面
 app.get("/todos/:id", (req, res) => {
   //檢視單一todo資料
   //研究一下-Model 的用法 findById()
@@ -65,6 +73,7 @@ app.get("/todos/:id", (req, res) => {
   });
 });
 
+//4.update 更新資料庫資料
 app.get("/todos/:id/edit", (req, res) => {
   //檢視-單一todo資料 編輯頁
   let id = req.params.id;
@@ -75,17 +84,21 @@ app.get("/todos/:id/edit", (req, res) => {
 
 app.post("/todos/:id/edit", (req, res) => {
   //編輯 單一todo資料
-  //res.send("編輯 單一todo資料");
+
   id = req.params.id;
   Todo.findById(id, (err, todo) => {
     todo.name = req.body.name;
-    todo.save(err => {
-      console.log(err);
-    });
+    todo.save(err => {});
+    if (req.body.done) {
+      todo.done = true;
+    } else {
+      todo.done = false;
+    }
     return res.redirect("/todos/" + todo.id);
   });
 });
 
+//5.delete 刪除一筆資料
 app.post("/todos/:id/delete", (req, res) => {
   //刪除單一todo 資料
   id = req.params.id;

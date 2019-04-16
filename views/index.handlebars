@@ -3,10 +3,11 @@
 <ul>
     {{#each todos}}
     <li>
+        <input type="checkbox" name="done" {{#if this.done}} checked {{/if}} disabled>
         {{{this.name}}}
         <a href="/todos/{{{this.id}}}">Detail</a>
         <a href="/todos/{{{this.id}}}/edit">Edit</a>
-        <form action="/todos/{{{this.id}}}/delete" method="post">
+        <form action="/todos/{{{this.id}}}/delete" method="post" style="display:inline;">
             <button type="submit">Delete</button>
         </form>
     </li>
