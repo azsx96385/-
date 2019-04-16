@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const exphbs = require("express-handlebars");
 const bdParser = require("body-parser");
+const methodOverride = require("method-override");
 
 //[model]
 const Todo = require("./models/todo");
@@ -31,6 +32,9 @@ app.set("view engine", "handlebars");
 
 //[設定]啟用body parser
 app.use(bdParser.urlencoded({ extended: true }));
+
+//[設定]使用 method override
+app.use(methodOverride("_method"));
 
 //---------------------------------------------------------------------------------------------
 //[路由區]--------------------------------------
@@ -82,7 +86,7 @@ app.get("/todos/:id/edit", (req, res) => {
   });
 });
 
-app.post("/todos/:id/edit", (req, res) => {
+app.put("/todos/:id/edit", (req, res) => {
   //編輯 單一todo資料
 
   id = req.params.id;
@@ -99,7 +103,7 @@ app.post("/todos/:id/edit", (req, res) => {
 });
 
 //5.delete 刪除一筆資料
-app.post("/todos/:id/delete", (req, res) => {
+app.delete("/todos/:id/delete", (req, res) => {
   //刪除單一todo 資料
   id = req.params.id;
   Todo.findById(id, (err, todo) => {

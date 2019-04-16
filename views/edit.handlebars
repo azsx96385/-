@@ -1,7 +1,5 @@
-<form action="/todos/{{{todo.id}}}/edit" method="post">
+<form action="/todos/{{{todo.id}}}/edit?_method=PUT" method="post">
     <input type="checkbox" name="done" {{#if todo.done}}checked {{/if}}>
     <input type="text" name="name" value="{{{todo.name}}}">
-    <form action="/todos/{{{todo.id}}}/delete" method="post" style="display:inline;">
-        <button type="submit">edit</button>
-    </form>
+    <button type="submit">edit</button>
 </form>
