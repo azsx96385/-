@@ -11,7 +11,33 @@ router.post("login", (req, res) => {});
 router.get("/register", (req, res) => {
   res.render("register");
 });
-router.post("/register", (req, res) => {});
+router.post("/register", (req, res) => {
+  //1.取得表單資料 | 解構賦值技巧
+  const { name, email, password, confirm_password } = req.body;
+
+  //2. 驗證資料庫是否已經有這筆資料 -email
+  userModel.findOne({ email: email }).then(user => {
+    if (user) {
+      //3.1 使用者已經存在-返回註冊頁面
+      console.log("使用者已存在，正在重新導向註冊頁面");
+      res.render("register", { name, email, password, confirm_password });
+    } else {
+      //3.2 使用者不存在，建立資料並且導回首頁
+      const newUser = new userModel({
+        name,
+        email,
+        password,
+        confirm_password
+      }); //建立物件
+      newUser
+        .save()
+        .then(user => {
+          res.redirect("/");
+        })
+        .catch(err => console.log(err)); //存到資料庫-報錯
+    }
+  });
+});
 router.get("/logout", (req, res) => {
   res.render("/login");
 });
