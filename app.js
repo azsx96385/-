@@ -40,3 +40,4 @@ app.use(methodOverride("_method"));
 //[路由區]--------------------------------------
 app.use("/", require("./routes/index"));
 app.use("/todos", require("./routes/todo"));
+app.use("/users", require("./routes/user"));
