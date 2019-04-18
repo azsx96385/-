@@ -1,6 +1,7 @@
 //1. 使用 express Router() | 必要Model
 const express = require("express");
 const router = express.Router();
+const userModel = require("../models/user");
 
 //2. 輸入路由
 router.get("/login", (req, res) => {
