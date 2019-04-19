@@ -1,16 +1,27 @@
 //1. 使用 express Router() | 必要Model
 const express = require("express");
 const router = express.Router();
+const passport = require("passport");
 const userModel = require("../models/user");
 
 //2. 輸入路由
+
 router.get("/login", (req, res) => {
   res.render("login");
 });
-router.post("login", (req, res) => {});
+
+router.post("/login", (req, res, next) => {
+  // 使用 passport 認證
+  passport.authenticate("local", {
+    successRedirect: "/", // 登入成功會回到根目錄
+    failureRedirect: "/users/login" // 失敗會留在原本頁面
+  })(req, res, next);
+});
+
 router.get("/register", (req, res) => {
   res.render("register");
 });
+
 router.post("/register", (req, res) => {
   //1.取得表單資料 | 解構賦值技巧
   const { name, email, password, confirm_password } = req.body;
