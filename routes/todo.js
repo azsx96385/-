@@ -2,14 +2,17 @@
 const express = require("express");
 const router = express.Router();
 const Todo = require("../models/todo");
+// 載入 auth middleware
+const { authenticated } = require('../config/auth')
+
 
 //---------------------------------------------
 //2.create - 新增一筆資料
-router.get("/new", (req, res) => {
+router.get("/new", authenticated, (req, res) => {
   //顯示新增頁面 |
   res.render("show");
 });
-router.post("/new", (req, res) => {
+router.post("/new", authenticated, (req, res) => {
   //顯示新增頁面 | 使用get-req.query.name 抓值 - 丟給model 建立參數
   //Q create & save 有什麼不一樣
 
@@ -23,7 +26,7 @@ router.post("/new", (req, res) => {
 });
 
 //3.檢視單一資料頁面
-router.get("/:id", (req, res) => {
+router.get("/:id", authenticated, (req, res) => {
   //檢視單一todo資料
   //研究一下-Model 的用法 findById()
   let id = req.params.id;
@@ -33,7 +36,7 @@ router.get("/:id", (req, res) => {
 });
 
 //4.update 更新資料庫資料
-router.get("/:id/edit", (req, res) => {
+router.get("/:id/edit", authenticated, (req, res) => {
   //檢視-單一todo資料 編輯頁
   let id = req.params.id;
   Todo.findById(id, (err, todo) => {
@@ -41,13 +44,13 @@ router.get("/:id/edit", (req, res) => {
   });
 });
 
-router.put("/:id/edit", (req, res) => {
+router.put("/:id/edit", authenticated, (req, res) => {
   //編輯 單一todo資料
 
   id = req.params.id;
   Todo.findById(id, (err, todo) => {
     todo.name = req.body.name;
-    todo.save(err => {});
+    todo.save(err => { });
     if (req.body.done) {
       todo.done = true;
     } else {
@@ -58,7 +61,7 @@ router.put("/:id/edit", (req, res) => {
 });
 
 //5.delete 刪除一筆資料
-router.delete("/:id/delete", (req, res) => {
+router.delete("/:id/delete", authenticated, (req, res) => {
   //刪除單一todo 資料
   id = req.params.id;
   Todo.findById(id, (err, todo) => {

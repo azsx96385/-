@@ -4,6 +4,10 @@ const router = express.Router();
 const passport = require("passport");
 const userModel = require("../models/user");
 
+// 載入 auth middleware
+const { authenticated } = require('../config/auth')
+
+
 //2. 輸入路由
 
 router.get("/login", (req, res) => {
