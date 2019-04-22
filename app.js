@@ -39,16 +39,18 @@ app.use(bdParser.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
 //[設定] 使用 express session
-app.use(session({ secret: "your secret key" })); // secret: 定義一組自己的私鑰（字串)
+app.use(session({ secret: "okokok" })); // secret: 定義一組自己的私鑰（字串)
 
 // [設定]使用 Passport
 app.use(passport.initialize());
 app.use(passport.session());
 // 載入 Passport config
 require("./config/passport")(passport);
+
 // 登入後可以取得使用者的資訊方便我們在 view 裡面直接使用
 app.use((req, res, next) => {
   res.locals.user = req.user;
+  res.locals.isAuthenticated = req.isAuthenticated(); //辨識使用者是否已經都入之變數
   next();
 });
 

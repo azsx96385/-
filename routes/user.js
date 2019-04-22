@@ -5,8 +5,7 @@ const passport = require("passport");
 const userModel = require("../models/user");
 
 // 載入 auth middleware
-const { authenticated } = require('../config/auth')
-
+const { authenticated } = require("../config/auth");
 
 //2. 輸入路由
 
@@ -54,7 +53,8 @@ router.post("/register", (req, res) => {
   });
 });
 router.get("/logout", (req, res) => {
-  res.render("/login");
+  req.logout();
+  res.redirect("/users/login");
 });
 
 //3. 匯出router

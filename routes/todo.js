@@ -3,8 +3,7 @@ const express = require("express");
 const router = express.Router();
 const Todo = require("../models/todo");
 // 載入 auth middleware
-const { authenticated } = require('../config/auth')
-
+const { authenticated } = require("../config/auth");
 
 //---------------------------------------------
 //2.create - 新增一筆資料
@@ -18,7 +17,7 @@ router.post("/new", authenticated, (req, res) => {
 
   let newTodo = req.body.todo;
 
-  const todo = Todo({ name: newTodo });
+  const todo = Todo({ name: newTodo, userId: req.user._id });
   todo.save(err => {
     if (err) return console.log(err);
     return res.redirect("/");
@@ -30,7 +29,7 @@ router.get("/:id", authenticated, (req, res) => {
   //檢視單一todo資料
   //研究一下-Model 的用法 findById()
   let id = req.params.id;
-  Todo.findById(id, (err, todo) => {
+  Todo.findOne({ _id: req.params.id, userId: req.user._id }, (err, todo) => {
     return res.render("detail", { todo: todo });
   });
 });
@@ -39,7 +38,7 @@ router.get("/:id", authenticated, (req, res) => {
 router.get("/:id/edit", authenticated, (req, res) => {
   //檢視-單一todo資料 編輯頁
   let id = req.params.id;
-  Todo.findById(id, (err, todo) => {
+  Todo.findOne({ _id: req.params.id, userId: req.user._id }, (err, todo) => {
     return res.render("edit", { todo });
   });
 });
@@ -48,9 +47,9 @@ router.put("/:id/edit", authenticated, (req, res) => {
   //編輯 單一todo資料
 
   id = req.params.id;
-  Todo.findById(id, (err, todo) => {
+  Todo.findOne({ _id: req.params.id, userId: req.user._id }, (err, todo) => {
     todo.name = req.body.name;
-    todo.save(err => { });
+    todo.save(err => {});
     if (req.body.done) {
       todo.done = true;
     } else {
@@ -64,7 +63,7 @@ router.put("/:id/edit", authenticated, (req, res) => {
 router.delete("/:id/delete", authenticated, (req, res) => {
   //刪除單一todo 資料
   id = req.params.id;
-  Todo.findById(id, (err, todo) => {
+  Todo.findOne({ _id: req.params.id, userId: req.user._id }, (err, todo) => {
     todo.remove(err => {
       return res.redirect("/");
     });

@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 const Todo = require("../models/todo");
 // 載入 auth middleware
-const { authenticated } = require('../config/auth')
+const { authenticated } = require("../config/auth");
 
 //----------------------------------
 //1.index - 顯示所有資料
@@ -18,14 +18,14 @@ const { authenticated } = require('../config/auth')
 // });
 
 // 加入 authenticated 驗證
-router.get('/', authenticated, (req, res) => {
-  Todo.find({})
-    .sort({ name: 'asc' })
+router.get("/", authenticated, (req, res) => {
+  Todo.find({ userId: req.user._id })
+    .sort({ name: "asc" })
     .exec((err, todos) => {
       if (err) return console.error(err);
-      return res.render('index', { todos: todos });
-    })
-})
+      return res.render("index", { todos: todos });
+    });
+});
 
 //---------------------------
 module.exports = router;
