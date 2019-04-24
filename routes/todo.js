@@ -3,12 +3,13 @@ const express = require("express");
 const router = express.Router();
 const Todo = require("../models/todo");
 // 載入 auth middleware
-const { authenticated } = require("../config/auth");
+const { authenticated, water } = require("../config/auth");
 
 //---------------------------------------------
 //2.create - 新增一筆資料
 router.get("/new", authenticated, (req, res) => {
   //顯示新增頁面 |
+  console.log(water);
   res.render("show");
 });
 router.post("/new", authenticated, (req, res) => {

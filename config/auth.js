@@ -7,5 +7,6 @@ module.exports = {
       return next(); //有驗證過才可以進到下一層處理
     }
     res.redirect("/users/login");
-  }
+  },
+  water: "9527"
 };

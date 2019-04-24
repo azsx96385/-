@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
+const bcrypt = require("bcryptjs");
 const userModel = require("../models/user");
 
 // 載入 auth middleware
@@ -38,17 +39,30 @@ router.post("/register", (req, res) => {
     } else {
       //3.2 使用者不存在，建立資料並且導回首頁
       const newUser = new userModel({
+        //建立物件
         name,
         email,
         password,
         confirm_password
-      }); //建立物件
-      newUser
-        .save()
-        .then(user => {
-          res.redirect("/");
-        })
-        .catch(err => console.log(err)); //存到資料庫-報錯
+      });
+
+      //bcryp 密碼加密處理
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(newUser.password, salt, (err, hash) => {
+          //有錯誤-列印出來
+          if (err) throw err;
+          //將雜湊後的密碼，回寫 password
+          newUser.password = hash;
+
+          //存到資料庫
+          newUser
+            .save()
+            .then(user => {
+              res.redirect("/");
+            })
+            .catch(err => console.log(err)); //存到資料庫-報錯
+        });
+      });
     }
   });
 });
