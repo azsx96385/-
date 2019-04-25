@@ -19,7 +19,10 @@ app.listen(port, () => {
 });
 
 //[設定]mongoose 設定與啟用 | "mongodb://127.0.0.1/todo" [mongodb|位置|資料庫名稱]
-mongoose.connect("mongodb://127.0.0.1/todo", { useNewUrlParser: true });
+mongoose.connect("mongodb://127.0.0.1/todo", {
+  useNewUrlParser: true,
+  useCreateIndex: true
+});
 const db = mongoose.connection;
 db.on("error", () => {
   console.log("mongodb error!!");
@@ -59,3 +62,4 @@ app.use((req, res, next) => {
 app.use("/", require("./routes/index"));
 app.use("/todos", require("./routes/todo"));
 app.use("/users", require("./routes/user"));
+app.use("/auth", require("./routes/auth"));
